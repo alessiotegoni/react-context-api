@@ -8,7 +8,7 @@ const Layout = () => {
         <nav className="navbar navbar-expand-lg bg-body-tertiary">
           <div className="container-fluid">
             <Link className="navbar-brand" to="/">
-              React router
+              React blog router
             </Link>
             <button
               className="navbar-toggler"
