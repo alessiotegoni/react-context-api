@@ -16,19 +16,15 @@ export default function Blog() {
       const {
         data: { post, prevCursor, nextCursor },
       } = await api.get(`/posts/${id}`);
-      if (prevCursor === nextCursor) {
-        setBlogPost(null);
-        setCursors(null);
-      } else {
+      if (post) {
         setBlogPost(post);
         setCursors({ prevCursor, nextCursor });
       }
     } catch (err) {
+      navigate(`/blog/${cursors.nextCursor || cursors.prevCursor}`);
       console.error(err);
     }
   };
-
-  console.log(blogPost, cursors);
 
   useEffect(() => {
     getBlogsPost();
@@ -36,8 +32,13 @@ export default function Blog() {
 
   const handleDeletePost = async () => {
     try {
-      await api.delete(`/posts/${id}`);
-      navigate(`/blog/${cursors.nextCursor || cursors.prevCursor}`);
+      const { data } = await api.delete(`/posts/${id}`);
+
+      if (data.hasPosts) {
+        navigate(`/blog/${cursors.nextCursor || cursors.prevCursor}`);
+      } else {
+        setBlogPost(null);
+      }
     } catch (err) {
       console.error(err);
     }

@@ -20,12 +20,18 @@ const Blogs = () => {
 
   return (
     <>
-      <h1 className="mb-3">I nostri post</h1>
-      <div className="row g-2">
-        {blogPosts.map((post) => (
-          <BlogPost key={post.id} {...post} />
-        ))}
-      </div>
+      {blogPosts.length ? (
+        <>
+          <h1 className="mb-3">I nostri post</h1>
+          <div className="row g-2">
+            {blogPosts.map((post) => (
+              <BlogPost key={post.id} {...post} />
+            ))}
+          </div>
+        </>
+      ) : (
+        <h2>Non hai nessun post</h2>
+      )}
     </>
   );
 };
