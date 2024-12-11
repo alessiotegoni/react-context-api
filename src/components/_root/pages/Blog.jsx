@@ -1,12 +1,17 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { api, baseURL } from "../../../config/apiConfig";
+import BlogPost from "../../BlogPosts/BlogPost";
+import { usePosts } from "../../../context/PostsContext";
 
 export default function Blog() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { posts } = usePosts();
 
-  const [blogPost, setBlogPost] = useState(null);
+  const [blogPost, setBlogPost] = useState(
+    posts.find((post) => post.id === id)
+  );
   const [cursors, setCursors] = useState(null);
 
   const getBlogsPost = async () => {
@@ -30,20 +35,6 @@ export default function Blog() {
     getBlogsPost();
   }, [id]);
 
-  const handleDeletePost = async () => {
-    try {
-      const { data } = await api.delete(`/posts/${id}`);
-
-      if (data.hasPosts) {
-        navigate(`/blog/${cursors.nextCursor || cursors.prevCursor}`);
-      } else {
-        setBlogPost(null);
-      }
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
   return blogPost ? (
     <div className="d-flex align-items-center gap-3">
       {!!cursors.prevCursor && (
@@ -54,25 +45,7 @@ export default function Blog() {
           ⬅️
         </Link>
       )}
-      <div className="card">
-        <img
-          src={`${baseURL}/${blogPost?.image}`}
-          className="card-img-top"
-          alt={blogPost.title}
-        />
-        <div className="card-body">
-          <h5 className="card-title">{blogPost.title}</h5>
-          <p className="card-text">{blogPost.content}</p>
-          <div className="d-flex justify-content-end">
-            <button
-              className="btn btn-danger"
-              onClick={() => id && handleDeletePost(id)}
-            >
-              Elimina post
-            </button>
-          </div>
-        </div>
-      </div>
+      <BlogPost {...blogPost} setPost={setBlogPost} />
       {!!cursors.nextCursor && (
         <Link
           to={`/blog/${cursors.nextCursor}`}
