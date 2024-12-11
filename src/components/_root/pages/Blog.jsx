@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import { api, baseURL } from "../../../config/apiConfig";
+import { api } from "../../../config/apiConfig";
 import BlogPost from "../../BlogPosts/BlogPost";
 import { usePosts } from "../../../context/PostsContext";
 
@@ -10,7 +10,7 @@ export default function Blog() {
   const { posts } = usePosts();
 
   const [blogPost, setBlogPost] = useState(
-    posts.find((post) => post.id === id)
+    posts.find((post) => post.id === parseInt(id))
   );
   const [cursors, setCursors] = useState(null);
 
@@ -37,7 +37,7 @@ export default function Blog() {
 
   return blogPost ? (
     <div className="d-flex align-items-center gap-3">
-      {!!cursors.prevCursor && (
+      {cursors?.prevCursor && (
         <Link
           to={`/blog/${cursors.prevCursor}`}
           className="btn rounded-full bg-primary"
@@ -45,8 +45,8 @@ export default function Blog() {
           ⬅️
         </Link>
       )}
-      <BlogPost {...blogPost} setPost={setBlogPost} />
-      {!!cursors.nextCursor && (
+      <BlogPost post={blogPost} setPost={setBlogPost} cursors={cursors} />
+      {cursors?.nextCursor && (
         <Link
           to={`/blog/${cursors.nextCursor}`}
           className="btn rounded-full bg-primary"

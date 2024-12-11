@@ -1,5 +1,5 @@
 import { Link, NavLink, Outlet } from "react-router-dom";
-import { navLinks } from "../../constants/index";
+import { navLinks } from "../../../constants";
 
 const Layout = () => {
   return (

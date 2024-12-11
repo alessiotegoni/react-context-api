@@ -1,31 +1,26 @@
 import { useLocation, useNavigate } from "react-router-dom";
-import { baseURL } from "../../config/apiConfig";
+import { api, baseURL } from "../../config/apiConfig";
 import { usePosts } from "../../context/PostsContext";
 
-export default function BlogPost({
-  id,
-  title,
-  content,
-  image,
-  slug,
-  tags,
-  setPost = () => {},
-}) {
+export default function BlogPost({ post, setPost = () => {}, cursors = {} }) {
   const { setPosts } = usePosts();
   const navigate = useNavigate();
   const { pathname } = useLocation();
 
-  console.log(pathname);
+  const { id, title, content, image, slug, tags } = post;
+
   const handleDeletePost = async (e) => {
     e.stopPropagation();
+
     try {
       const { data } = await api.delete(`/posts/${id}`);
 
-      if (data.hasPosts) {
-        // navigate(`/blog/${cursors.nextCursor || cursors.prevCursor}`);
+      if (data.hasPosts && pathname === `/blog/${id}`) {
+        navigate(`/blog/${cursors.nextCursor || cursors.prevCursor}`);
       } else {
         setPost(null);
       }
+      setPosts((posts) => posts.filter((post) => post.id !== id));
     } catch (err) {
       console.error(err);
     }
@@ -36,7 +31,7 @@ export default function BlogPost({
       <div
         className="card cursor-pointer"
         onClick={() =>
-          pathname === "/blog" || (pathname === "/" && navigate(id.toString()))
+          (pathname === "/blog" || pathname === "/") && navigate(`/blog/${id}`)
         }
       >
         <img src={`${baseURL}/${image}`} className="card-img-top" alt={title} />

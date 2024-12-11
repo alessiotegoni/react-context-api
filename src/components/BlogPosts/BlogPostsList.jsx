@@ -7,7 +7,7 @@ export default function BlogPostsList() {
   return posts.length ? (
     <div className="row g-2">
       {posts.map((post) => (
-        <BlogPost key={post.id} {...post} />
+        <BlogPost key={post.id} post={post} />
       ))}
     </div>
   ) : (
